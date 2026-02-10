@@ -1,0 +1,82 @@
+# ----- Gradle -----
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ----- Android -----
+*.iml
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+output.json
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# ----- Kotlin -----
+.kotlin/
+
+# ----- Kotlin Multiplatform / Native -----
+*.framework/
+*.klib
+
+# ----- iOS / Xcode -----
+xcuserdata/
+*.xcuserstate
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xccheckout
+*.xcscmblueprint
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# Keep Xcode project structure (needed for version control)
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+
+# ----- macOS -----
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ----- Secrets & env -----
+*.keystore
+!debug.keystore
+*.jks
+.env
+.env.local
+.env.*.local
+google-services.json
+secrets.properties
+
+# ----- Logs & temp -----
+*.log
+*.tmp
+*.temp
+*.swp
+*~
+.cache/
+
+# ----- Misc -----
+node_modules/
