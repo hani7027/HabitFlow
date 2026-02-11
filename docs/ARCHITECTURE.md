@@ -265,4 +265,6 @@ com.hk.habitflow/
 
 **Full design (API-ready, minimal modules):** See [ARCHITECTURE-JOURNEY-MODULES.md](ARCHITECTURE-JOURNEY-MODULES.md).
 
+**Strategy (screen grouping, final 9 modules, how to create and manage):** See [MODULARIZATION-STRATEGY.md](MODULARIZATION-STRATEGY.md).
+
 **Incremental steps:** See [MODULARIZATION.md](MODULARIZATION.md) if you prefer a step-by-step migration (e.g. add :design first, then one journey at a time).

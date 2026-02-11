@@ -23,29 +23,20 @@ import androidx.compose.ui.unit.sp
 // ---------- Colors (from HabitFlow design) ----------
 
 object HabitFlowColors {
-    // Primary — purple (brand, primary buttons, selected nav)
     val Primary = Color(0xFF6A0DAD)
     val PrimaryVariant = Color(0xFF7B2CBF)
     val OnPrimary = Color.White
-
-    // Success / completion — green (progress, checkmarks, Create Habit, FAB)
     val Success = Color(0xFF22C55E)
     val SuccessContainer = Color(0xFFDCFCE7)
     val OnSuccess = Color.White
-
-    // Focus / warning — orange (Focus timer, high-priority)
     val Focus = Color(0xFFF97316)
     val FocusContainer = Color(0xFFFFEDD5)
     val OnFocus = Color.White
-
-    // Information / secondary — teal and blue (categories, secondary progress)
     val Secondary = Color(0xFF0D9488)
     val SecondaryContainer = Color(0xFFCCFBF1)
     val OnSecondary = Color.White
     val Info = Color(0xFF3B82F6)
     val InfoContainer = Color(0xFFDBEAFE)
-
-    // Surfaces and background
     val BackgroundLight = Color(0xFFF8FAFC)
     val SurfaceLight = Color.White
     val SurfaceVariantLight = Color(0xFFF1F5F9)
@@ -53,26 +44,18 @@ object HabitFlowColors {
     val OnSurfaceLight = Color(0xFF1E293B)
     val OutlineLight = Color(0xFFE2E8F0)
     val OutlineVariantLight = Color(0xFFCBD5E1)
-
-    // Text
     val TextPrimary = Color(0xFF1E293B)
     val TextSecondary = Color(0xFF64748B)
     val TextPlaceholder = Color(0xFF94A3B8)
     val TextOnPrimary = Color.White
-
-    // Error
     val Error = Color(0xFFB3261E)
     val OnError = Color.White
-
-    // Task/habit category and priority (chips and accent bars)
     val CategoryWork = Color(0xFFB91C1C)
     val CategoryPersonal = Color(0xFF6A0DAD)
     val CategoryHealth = Color(0xFF15803D)
     val PriorityHigh = Color(0xFFB91C1C)
     val PriorityMedium = Color(0xFFEAB308)
     val PriorityLow = Color(0xFF22C55E)
-
-    // Dark theme
     val BackgroundDark = Color(0xFF0F172A)
     val SurfaceDark = Color(0xFF1E293B)
     val OnBackgroundDark = Color(0xFFF1F5F9)
@@ -129,96 +112,23 @@ fun habitFlowDarkColorScheme(): ColorScheme = darkColorScheme(
     onError = HabitFlowColors.OnError
 )
 
-// ---------- Typography (from HabitFlow design — clean sans-serif) ----------
-
 val HabitFlowTypography = Typography(
-    displayLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp
-    ),
-    displayMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 45.sp,
-        lineHeight = 52.sp
-    ),
-    displaySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 36.sp,
-        lineHeight = 44.sp
-    ),
-    headlineLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
-        lineHeight = 36.sp
-    ),
-    headlineMedium = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp
-    ),
-    headlineSmall = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 22.sp,
-        lineHeight = 28.sp
-    ),
-    titleLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
-        lineHeight = 28.sp
-    ),
-    titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp
-    ),
-    titleSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
-    ),
-    bodyLarge = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-    bodyMedium = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp
-    ),
-    bodySmall = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
-    ),
-    labelLarge = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp
-    ),
-    labelMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    ),
-    labelSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
+    displayLarge = TextStyle(fontWeight = FontWeight.Normal, fontSize = 57.sp, lineHeight = 64.sp, letterSpacing = (-0.25).sp),
+    displayMedium = TextStyle(fontWeight = FontWeight.Normal, fontSize = 45.sp, lineHeight = 52.sp),
+    displaySmall = TextStyle(fontWeight = FontWeight.Normal, fontSize = 36.sp, lineHeight = 44.sp),
+    headlineLarge = TextStyle(fontWeight = FontWeight.Bold, fontSize = 28.sp, lineHeight = 36.sp),
+    headlineMedium = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 32.sp),
+    headlineSmall = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 22.sp, lineHeight = 28.sp),
+    titleLarge = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 28.sp),
+    titleMedium = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.15.sp),
+    titleSmall = TextStyle(fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp),
+    bodyLarge = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp),
+    bodyMedium = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.25.sp),
+    bodySmall = TextStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.4.sp),
+    labelLarge = TextStyle(fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp),
+    labelMedium = TextStyle(fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp),
+    labelSmall = TextStyle(fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp)
 )
-
-// ---------- Shapes (rounded corners — design signature) ----------
 
 private val CornerRadiusSmall = 4.dp
 private val CornerRadiusMedium = 8.dp
@@ -232,8 +142,6 @@ val HabitFlowShapes = Shapes(
     large = RoundedCornerShape(CornerRadiusLarge),
     extraLarge = RoundedCornerShape(CornerRadiusExtraLarge)
 )
-
-// ---------- Spacing ----------
 
 data class HabitFlowSpacing(
     val tiny: Dp,
@@ -260,8 +168,6 @@ val DefaultHabitFlowSpacing = HabitFlowSpacing(
     inputPaddingVertical = 12.dp,
     inputPaddingHorizontal = 16.dp
 )
-
-// ---------- Component tokens (input, date/time, button, card, FAB) ----------
 
 data class HabitFlowComponents(
     val cornerRadiusSmall: Dp,

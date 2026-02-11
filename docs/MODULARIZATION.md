@@ -1,6 +1,6 @@
 # HabitFlow — How to Follow Modularization
 
-**Preferred approach:** One **journey** per module (one full flow: UI + domain + data in one place). Adding API later = change only that journey’s data layer; no shared “core” to touch. See **[ARCHITECTURE-JOURNEY-MODULES.md](ARCHITECTURE-JOURNEY-MODULES.md)** for the full journey-based design.
+**Preferred approach:** One **journey** per module (one full flow: UI + domain + data in one place). Adding API later = change only that journey’s data layer; no shared “core” to touch. See **[MODULARIZATION-STRATEGY.md](MODULARIZATION-STRATEGY.md)** for design analysis, **final 9 modules**, and how to create/manage in KMP. See **[ARCHITECTURE-JOURNEY-MODULES.md](ARCHITECTURE-JOURNEY-MODULES.md)** for the full journey-based design.
 
 This guide gives **incremental steps**: one module at a time, then build and run.
 

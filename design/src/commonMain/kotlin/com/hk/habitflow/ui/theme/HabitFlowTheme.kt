@@ -5,13 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 
-/**
- * Single theme entry for the app. All styles are driven from [DesignTokens]
- * (aligned with HabitFlow hi-fi design).
- * Use MaterialTheme.colorScheme, MaterialTheme.typography, MaterialTheme.shapes.
- * Use LocalHabitFlowSpacing.current for padding/margins.
- * Use LocalHabitFlowComponents.current for input, button, card, FAB tokens.
- */
 @Composable
 fun HabitFlowTheme(
     darkTheme: Boolean = false,
