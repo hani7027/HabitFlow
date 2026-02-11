@@ -7,7 +7,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onNavigateToTasks: () -> Unit = {},
+    onNavigateToHabits: () -> Unit = {},
+    onNavigateToFocus: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -19,9 +22,9 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is HomeEffect.NavigateToTasks -> { /* TODO: NavController.navigate(Tasks) */ }
-                is HomeEffect.NavigateToHabits -> { /* TODO: NavController.navigate(Habits) */ }
-                is HomeEffect.NavigateToFocus -> { /* TODO: NavController.navigate(Focus) */ }
+                is HomeEffect.NavigateToTasks -> onNavigateToTasks()
+                is HomeEffect.NavigateToHabits -> onNavigateToHabits()
+                is HomeEffect.NavigateToFocus -> onNavigateToFocus()
             }
         }
     }
