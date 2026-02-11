@@ -7,7 +7,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    onNavigateToHome: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -19,11 +20,9 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LoginContract.Effect.NavigateToHome -> {
-                    // TODO: Handle navigation
-                }
+                is LoginContract.Effect.NavigateToHome -> onNavigateToHome()
                 is LoginContract.Effect.ShowToast -> {
-                    // TODO: Show toast
+                    // TODO: Show toast (platform-specific or Snackbar)
                 }
             }
         }

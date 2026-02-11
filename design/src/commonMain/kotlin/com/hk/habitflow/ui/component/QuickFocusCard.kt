@@ -60,7 +60,7 @@ fun QuickFocusCard(
                     color = Color.White.copy(alpha = 0.9f)
                 )
                 Text(
-                    text = "%02d:00".format(focusMinutes),
+                    text = "${focusMinutes.toString().padStart(2, '0')}:00",
                     style = MaterialTheme.typography.displaySmall,
                     color = Color.White
                 )
