@@ -3,8 +3,8 @@ package com.hk.habitflow.ui.screen.login
 interface LoginContract {
     data class State(
         val isLoading: Boolean = false,
-        val email: String = "",
-        val password: String = "",
+        val email: String = "test@example.com",
+        val password: String = "password123",
         val emailError: String? = null,
         val passwordError: String? = null,
         val error: String? = null
