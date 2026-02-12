@@ -28,4 +28,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":androidApp", ":composeApp", ":design", ":core", ":task")
+include(":androidApp", ":composeApp", ":design", ":core", ":task", ":habit")
