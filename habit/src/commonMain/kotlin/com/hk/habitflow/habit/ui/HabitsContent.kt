@@ -23,6 +23,7 @@ import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 fun HabitsContent(
     state: HabitsState,
     onEvent: (HabitsEvent) -> Unit,
+    onAddClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val spacing = LocalHabitFlowSpacing.current
@@ -57,7 +58,7 @@ fun HabitsContent(
             )
         }
         FloatingActionButton(
-            onClick = { },
+            onClick = onAddClick,
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = spacing.medium, bottom = 80.dp),

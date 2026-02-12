@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.hk.habitflow.habit.HabitsScreen
 import com.hk.habitflow.habit.HabitsViewModel
+import com.hk.habitflow.habit.create.CreateHabitViewModel
 import com.hk.habitflow.task.TasksScreen
 import com.hk.habitflow.task.TasksViewModel
 import com.hk.habitflow.ui.component.MainBottomNav
@@ -38,8 +39,12 @@ fun MainScreen(
                     TasksScreen(viewModel = viewModel)
                 }
             MainTab.Habits -> {
-                val viewModel: HabitsViewModel = koinViewModel()
-                HabitsScreen(viewModel = viewModel)
+                val habitsViewModel: HabitsViewModel = koinViewModel()
+                val createHabitViewModel: CreateHabitViewModel = koinViewModel()
+                HabitsScreen(
+                    habitsViewModel = habitsViewModel,
+                    createHabitViewModel = createHabitViewModel
+                )
             }
         }
         MainBottomNav(
