@@ -15,6 +15,7 @@ sealed class HabitsEvent {
     data class HabitClicked(val habitId: String) : HabitsEvent()
     data class HabitCompleteToggled(val habitId: String) : HabitsEvent()
     data class HabitProgressIncrement(val habitId: String) : HabitsEvent()
+    data class AddHabit(val habit: HabitUi) : HabitsEvent()
     object CalendarClick : HabitsEvent()
 }
 

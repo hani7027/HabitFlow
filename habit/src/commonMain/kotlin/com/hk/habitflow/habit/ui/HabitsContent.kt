@@ -1,9 +1,7 @@
 package com.hk.habitflow.habit.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +21,7 @@ import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 fun HabitsContent(
     state: HabitsState,
     onEvent: (HabitsEvent) -> Unit,
+    onAddClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val spacing = LocalHabitFlowSpacing.current
@@ -57,7 +56,7 @@ fun HabitsContent(
             )
         }
         FloatingActionButton(
-            onClick = { },
+            onClick = onAddClick,
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = spacing.medium, bottom = 80.dp),

@@ -31,7 +31,22 @@ class HabitsViewModel : ViewModel() {
             is HabitsEvent.HabitClicked -> { }
             is HabitsEvent.HabitCompleteToggled -> toggleComplete(event.habitId)
             is HabitsEvent.HabitProgressIncrement -> incrementProgress(event.habitId)
+            is HabitsEvent.AddHabit -> addHabit(event.habit)
             HabitsEvent.CalendarClick -> viewModelScope.launch { _effect.send(HabitsEffect.OpenCalendar) }
+        }
+    }
+
+    private fun addHabit(habit: HabitUi) {
+        val id = "habit_${_state.value.habits.size}_${kotlin.random.Random.nextLong()}"
+        val newHabit = habit.copy(id = id)
+        _state.update { state ->
+            val list = state.habits + newHabit
+            val completed = list.count { it.isCompletedToday }
+            state.copy(
+                habits = list,
+                completedCount = completed,
+                remainingCount = (list.size - completed).coerceAtLeast(0)
+            )
         }
     }
 
