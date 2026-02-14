@@ -1,0 +1,61 @@
+-- User-scoped tasks. Filter all operations by userId.
+-- categoryId -> TaskCategory.id, priorityId -> TaskPriority.id
+CREATE TABLE Task (
+    id TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    categoryId TEXT NOT NULL,
+    priorityId TEXT NOT NULL,
+    dueDate INTEGER,
+    reminderTime INTEGER,
+    isCompleted INTEGER NOT NULL DEFAULT 0,
+    createdAt INTEGER NOT NULL,
+    completedAt INTEGER,
+    FOREIGN KEY (userId) REFERENCES User(id),
+    FOREIGN KEY (categoryId) REFERENCES TaskCategory(id),
+    FOREIGN KEY (priorityId) REFERENCES TaskPriority(id)
+);
+
+CREATE INDEX Task_userId ON Task(userId);
+CREATE INDEX Task_userId_isCompleted ON Task(userId, isCompleted);
+CREATE INDEX Task_userId_dueDate ON Task(userId, dueDate);
+
+insert:
+INSERT OR REPLACE INTO Task(id, userId, title, description, categoryId, priorityId, dueDate, reminderTime, isCompleted, createdAt, completedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Task
+SET title = ?, description = ?, categoryId = ?, priorityId = ?, dueDate = ?, reminderTime = ?, isCompleted = ?, completedAt = ?
+WHERE id = ? AND userId = ?;
+
+deleteById:
+DELETE FROM Task
+WHERE id = ? AND userId = ?;
+
+selectAllByUserId:
+SELECT Task.*, TaskCategory.name AS categoryName, TaskCategory.icon AS categoryIcon,
+       TaskPriority.name AS priorityName, TaskPriority.color AS priorityColor
+FROM Task
+INNER JOIN TaskCategory ON Task.categoryId = TaskCategory.id
+INNER JOIN TaskPriority ON Task.priorityId = TaskPriority.id
+WHERE Task.userId = ?
+ORDER BY Task.dueDate ASC, Task.createdAt ASC;
+
+selectByUserIdAndId:
+SELECT Task.*, TaskCategory.name AS categoryName, TaskCategory.icon AS categoryIcon,
+       TaskPriority.name AS priorityName, TaskPriority.color AS priorityColor
+FROM Task
+INNER JOIN TaskCategory ON Task.categoryId = TaskCategory.id
+INNER JOIN TaskPriority ON Task.priorityId = TaskPriority.id
+WHERE Task.userId = ? AND Task.id = ?;
+
+selectIncompleteByUserId:
+SELECT Task.*, TaskCategory.name AS categoryName, TaskCategory.icon AS categoryIcon,
+       TaskPriority.name AS priorityName, TaskPriority.color AS priorityColor
+FROM Task
+INNER JOIN TaskCategory ON Task.categoryId = TaskCategory.id
+INNER JOIN TaskPriority ON Task.priorityId = TaskPriority.id
+WHERE Task.userId = ? AND Task.isCompleted = 0
+ORDER BY Task.dueDate ASC, Task.createdAt ASC;

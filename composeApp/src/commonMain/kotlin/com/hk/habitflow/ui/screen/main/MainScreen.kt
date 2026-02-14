@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.hk.habitflow.habit.HabitsScreen
@@ -25,7 +27,12 @@ fun MainScreen(
     onTabSelected: (MainTab) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        when (selectedTab) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 64.dp)
+        ) {
+            when (selectedTab) {
                 MainTab.Home -> {
                     val viewModel: HomeViewModel = koinViewModel()
                     HomeScreen(
@@ -45,6 +52,7 @@ fun MainScreen(
                     habitsViewModel = habitsViewModel,
                     createHabitViewModel = createHabitViewModel
                 )
+            }
             }
         }
         MainBottomNav(

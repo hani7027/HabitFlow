@@ -1,0 +1,23 @@
+-- User table for authentication (login & register).
+-- Store password hashes only; never raw passwords.
+CREATE TABLE User (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    passwordHash TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
+);
+
+CREATE INDEX User_email ON User(email);
+
+selectByEmail:
+SELECT * FROM User
+WHERE email = ?;
+
+selectById:
+SELECT * FROM User
+WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO User(id, name, email, passwordHash, createdAt)
+VALUES (?, ?, ?, ?, ?);

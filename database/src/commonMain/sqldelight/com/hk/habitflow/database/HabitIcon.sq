@@ -1,0 +1,19 @@
+-- Static reference table for habit icons.
+CREATE TABLE HabitIcon (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE INDEX HabitIcon_id ON HabitIcon(id);
+
+selectAll:
+SELECT * FROM HabitIcon
+ORDER BY name;
+
+selectById:
+SELECT * FROM HabitIcon
+WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO HabitIcon(id, name)
+VALUES (?, ?);

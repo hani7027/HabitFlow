@@ -1,0 +1,20 @@
+-- Static reference table for task priorities (Low, Medium, High).
+CREATE TABLE TaskPriority (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    color TEXT
+);
+
+CREATE INDEX TaskPriority_id ON TaskPriority(id);
+
+selectAll:
+SELECT * FROM TaskPriority
+ORDER BY name;
+
+selectById:
+SELECT * FROM TaskPriority
+WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO TaskPriority(id, name, color)
+VALUES (?, ?, ?);

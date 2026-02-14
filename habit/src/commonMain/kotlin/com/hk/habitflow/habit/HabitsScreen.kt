@@ -26,11 +26,11 @@ fun HabitsScreen(
     if (showCreateHabit) {
         CreateHabitScreen(
             viewModel = createHabitViewModel,
-            onBack = { showCreateHabit = false },
-            onHabitCreated = { habit ->
-                habitsViewModel.onEvent(HabitsEvent.AddHabit(habit))
+            onBack = {
                 showCreateHabit = false
-            }
+                habitsViewModel.onEvent(HabitsEvent.Refresh)
+            },
+            onHabitCreated = { }
         )
     } else {
         HabitsContent(

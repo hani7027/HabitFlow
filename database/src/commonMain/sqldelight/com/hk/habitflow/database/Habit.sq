@@ -1,0 +1,58 @@
+-- User-scoped habits. Filter all operations by userId.
+-- iconId -> HabitIcon.id, frequencyTypeId -> HabitFrequencyType.id
+CREATE TABLE Habit (
+    id TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    name TEXT NOT NULL,
+    iconId TEXT NOT NULL,
+    frequencyTypeId TEXT NOT NULL,
+    targetValue INTEGER NOT NULL DEFAULT 0,
+    reminderTime INTEGER,
+    createdAt INTEGER NOT NULL,
+    isArchived INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES User(id),
+    FOREIGN KEY (iconId) REFERENCES HabitIcon(id),
+    FOREIGN KEY (frequencyTypeId) REFERENCES HabitFrequencyType(id)
+);
+
+CREATE INDEX Habit_userId ON Habit(userId);
+CREATE INDEX Habit_userId_isArchived ON Habit(userId, isArchived);
+
+insert:
+INSERT OR REPLACE INTO Habit(id, userId, name, iconId, frequencyTypeId, targetValue, reminderTime, createdAt, isArchived)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Habit
+SET name = ?, iconId = ?, frequencyTypeId = ?, targetValue = ?, reminderTime = ?, isArchived = ?
+WHERE id = ? AND userId = ?;
+
+deleteById:
+DELETE FROM Habit
+WHERE id = ? AND userId = ?;
+
+selectHabitsAllByUserId:
+SELECT Habit.*, HabitIcon.name AS iconName,
+       HabitFrequencyType.name AS frequencyTypeName, HabitFrequencyType.description AS frequencyTypeDescription
+FROM Habit
+INNER JOIN HabitIcon ON Habit.iconId = HabitIcon.id
+INNER JOIN HabitFrequencyType ON Habit.frequencyTypeId = HabitFrequencyType.id
+WHERE Habit.userId = ?
+ORDER BY Habit.createdAt ASC;
+
+selectHabitsActiveByUserId:
+SELECT Habit.*, HabitIcon.name AS iconName,
+       HabitFrequencyType.name AS frequencyTypeName, HabitFrequencyType.description AS frequencyTypeDescription
+FROM Habit
+INNER JOIN HabitIcon ON Habit.iconId = HabitIcon.id
+INNER JOIN HabitFrequencyType ON Habit.frequencyTypeId = HabitFrequencyType.id
+WHERE Habit.userId = ? AND Habit.isArchived = 0
+ORDER BY Habit.createdAt ASC;
+
+selectHabitByUserIdAndId:
+SELECT Habit.*, HabitIcon.name AS iconName,
+       HabitFrequencyType.name AS frequencyTypeName, HabitFrequencyType.description AS frequencyTypeDescription
+FROM Habit
+INNER JOIN HabitIcon ON Habit.iconId = HabitIcon.id
+INNER JOIN HabitFrequencyType ON Habit.frequencyTypeId = HabitFrequencyType.id
+WHERE Habit.userId = ? AND Habit.id = ?;
