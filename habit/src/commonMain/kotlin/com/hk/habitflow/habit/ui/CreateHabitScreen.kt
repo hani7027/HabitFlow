@@ -31,7 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun CreateHabitScreen(
     viewModel: CreateHabitViewModel,
     onBack: () -> Unit,
-    onHabitCreated: (com.hk.habitflow.habit.model.HabitUi) -> Unit,
+    onHabitCreated: (com.hk.habitflow.habit.model.HabitUi) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

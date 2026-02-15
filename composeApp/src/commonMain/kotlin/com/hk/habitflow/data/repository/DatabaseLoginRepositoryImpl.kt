@@ -9,7 +9,7 @@ import com.hk.habitflow.session.SessionHolder
  * Replace with UserRepository/DB check when adding real auth.
  */
 class DatabaseLoginRepositoryImpl(
-    private val userRepository: UserRepository
+    private val _userRepository: UserRepository
 ) : LoginRepository {
 
     private val fixedEmail = "admin@habitflow.com"

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class HabitRepositoryImpl(
-    private val database: HabitFlowDatabase
+    database: HabitFlowDatabase
 ) : HabitRepository {
 
     private val queries = database.habitQueries
@@ -65,7 +65,7 @@ class HabitRepositoryImpl(
     }
 }
 
-private fun com.hk.habitflow.database.HabitIcon.toHabitIcon(): HabitIcon = HabitIcon(
+private fun com.hk.habitflow.database.HabitIcon.toHabitIcon(): com.hk.habitflow.domain.model.HabitIcon = com.hk.habitflow.domain.model.HabitIcon(
     id = id,
     name = name
 )

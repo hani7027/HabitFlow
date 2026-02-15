@@ -355,7 +355,7 @@ private fun PriorityChip(
 ) {
     val spacing = LocalHabitFlowSpacing.current
     Surface(
-        modifier = modifier,
+        modifier = modifier.then(if (selected) Modifier.border(2.dp, priority.color, RoundedCornerShape(8.dp)) else Modifier),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         color = priority.color.copy(alpha = 0.2f)

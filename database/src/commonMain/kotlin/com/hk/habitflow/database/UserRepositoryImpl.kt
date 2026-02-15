@@ -8,6 +8,7 @@ class UserRepositoryImpl(
     database: HabitFlowDatabase
 ) : UserRepository {
 
+
     private val queries = database.userQueries
 
     override suspend fun getByEmail(email: String): User? = withContext(databaseDispatcher) {

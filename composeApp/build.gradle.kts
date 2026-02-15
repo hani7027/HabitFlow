@@ -8,6 +8,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
     androidLibrary {
         namespace = "com.hk.habitflow"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
