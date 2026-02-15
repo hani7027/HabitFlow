@@ -7,6 +7,7 @@ import com.hk.habitflow.domain.model.HabitWithDetails
 import com.hk.habitflow.domain.repository.HabitRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -19,22 +20,16 @@ class HabitRepositoryImpl(
     private val frequencyQueries = database.habitFrequencyTypeQueries
 
     override fun getHabitIcons(): Flow<List<HabitIcon>> = flow {
-        withContext(databaseDispatcher) {
-            emit(iconQueries.selectAll().executeAsList().map { it.toHabitIcon() })
-        }
-    }
+        emit(iconQueries.selectAll().executeAsList().map { it.toHabitIcon() })
+    }.flowOn(databaseDispatcher)
 
     override fun getHabitFrequencyTypes(): Flow<List<HabitFrequencyType>> = flow {
-        withContext(databaseDispatcher) {
-            emit(frequencyQueries.selectAll().executeAsList().map { it.toFrequencyType() })
-        }
-    }
+        emit(frequencyQueries.selectAll().executeAsList().map { it.toFrequencyType() })
+    }.flowOn(databaseDispatcher)
 
     override fun observeHabitsByUserId(userId: String): Flow<List<HabitWithDetails>> = flow {
-        withContext(databaseDispatcher) {
-            emit(queries.selectHabitsAllByUserId(userId).executeAsList().map { it.toHabitWithDetails() })
-        }
-    }
+        emit(queries.selectHabitsAllByUserId(userId).executeAsList().map { it.toHabitWithDetails() })
+    }.flowOn(databaseDispatcher)
 
     override suspend fun getHabitById(userId: String, habitId: String): HabitWithDetails? = withContext(databaseDispatcher) {
         queries.selectHabitByUserIdAndId(userId, habitId).executeAsOneOrNull()?.toHabitWithDetails()

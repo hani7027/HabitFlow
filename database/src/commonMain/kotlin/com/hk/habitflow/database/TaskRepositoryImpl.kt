@@ -7,6 +7,7 @@ import com.hk.habitflow.domain.model.TaskWithDetails
 import com.hk.habitflow.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class TaskRepositoryImpl(
@@ -18,22 +19,16 @@ class TaskRepositoryImpl(
     private val priorityQueries = database.taskPriorityQueries
 
     override fun getTaskCategories(): Flow<List<TaskCategory>> = flow {
-        withContext(databaseDispatcher) {
-            emit(categoryQueries.selectAll().executeAsList().map { it.toCategory() })
-        }
-    }
+        emit(categoryQueries.selectAll().executeAsList().map { it.toCategory() })
+    }.flowOn(databaseDispatcher)
 
     override fun getTaskPriorities(): Flow<List<TaskPriority>> = flow {
-        withContext(databaseDispatcher) {
-            emit(priorityQueries.selectAll().executeAsList().map { it.toPriority() })
-        }
-    }
+        emit(priorityQueries.selectAll().executeAsList().map { it.toPriority() })
+    }.flowOn(databaseDispatcher)
 
     override fun observeTasksByUserId(userId: String): Flow<List<TaskWithDetails>> = flow {
-        withContext(databaseDispatcher) {
-            emit(queries.selectAllByUserId(userId).executeAsList().map { it.toTaskWithDetails() })
-        }
-    }
+        emit(queries.selectAllByUserId(userId).executeAsList().map { it.toTaskWithDetails() })
+    }.flowOn(databaseDispatcher)
 
     override suspend fun getTaskById(userId: String, taskId: String): TaskWithDetails? = withContext(databaseDispatcher) {
         queries.selectByUserIdAndId(userId, taskId).executeAsOneOrNull()?.toTaskWithDetails()
