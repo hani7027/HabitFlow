@@ -3,7 +3,6 @@ package com.hk.habitflow.database
 import android.content.Context
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import com.hk.habitflow.database.HabitFlowDatabase
 
 actual class DriverFactory actual constructor(private val platformContext: Any?) {
     actual fun createDriver(): SqlDriver {

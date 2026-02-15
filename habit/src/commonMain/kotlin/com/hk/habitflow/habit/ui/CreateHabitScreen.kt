@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.hk.habitflow.habit.create.CreateHabitEffect
 import com.hk.habitflow.habit.create.CreateHabitEvent
-import com.hk.habitflow.habit.create.CreateHabitState
 import com.hk.habitflow.habit.create.CreateHabitViewModel
 import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing

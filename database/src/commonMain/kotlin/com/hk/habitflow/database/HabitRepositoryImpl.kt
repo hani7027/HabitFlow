@@ -1,6 +1,5 @@
 package com.hk.habitflow.database
 
-import com.hk.habitflow.database.HabitFlowDatabase
 import com.hk.habitflow.domain.model.HabitFrequencyType
 import com.hk.habitflow.domain.model.HabitIcon
 import com.hk.habitflow.domain.model.HabitWithDetails
@@ -8,7 +7,6 @@ import com.hk.habitflow.domain.repository.HabitRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class HabitRepositoryImpl(
@@ -67,7 +65,7 @@ class HabitRepositoryImpl(
     }
 }
 
-private fun com.hk.habitflow.database.HabitIcon.toHabitIcon(): HabitIcon = com.hk.habitflow.domain.model.HabitIcon(
+private fun com.hk.habitflow.database.HabitIcon.toHabitIcon(): HabitIcon = HabitIcon(
     id = id,
     name = name
 )
@@ -78,9 +76,9 @@ private fun com.hk.habitflow.database.HabitFrequencyType.toFrequencyType(): Habi
     description = description
 )
 
-private fun com.hk.habitflow.database.SelectHabitsAllByUserId.toHabitWithDetails(): HabitWithDetails = habitWithDetailsFromRow(id, userId, name, iconId, iconName, frequencyTypeId, frequencyTypeName, frequencyTypeDescription, targetValue, reminderTime, createdAt, isArchived)
+private fun SelectHabitsAllByUserId.toHabitWithDetails(): HabitWithDetails = habitWithDetailsFromRow(id, userId, name, iconId, iconName, frequencyTypeId, frequencyTypeName, frequencyTypeDescription, targetValue, reminderTime, createdAt, isArchived)
 
-private fun com.hk.habitflow.database.SelectHabitByUserIdAndId.toHabitWithDetails(): HabitWithDetails = habitWithDetailsFromRow(id, userId, name, iconId, iconName, frequencyTypeId, frequencyTypeName, frequencyTypeDescription, targetValue, reminderTime, createdAt, isArchived)
+private fun SelectHabitByUserIdAndId.toHabitWithDetails(): HabitWithDetails = habitWithDetailsFromRow(id, userId, name, iconId, iconName, frequencyTypeId, frequencyTypeName, frequencyTypeDescription, targetValue, reminderTime, createdAt, isArchived)
 
 private fun habitWithDetailsFromRow(
     id: String,

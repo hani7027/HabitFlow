@@ -1,12 +1,11 @@
 package com.hk.habitflow.database
 
-import com.hk.habitflow.database.HabitFlowDatabase
 import com.hk.habitflow.domain.model.User
 import com.hk.habitflow.domain.repository.UserRepository
 import kotlinx.coroutines.withContext
 
 class UserRepositoryImpl(
-    private val database: HabitFlowDatabase
+    database: HabitFlowDatabase
 ) : UserRepository {
 
     private val queries = database.userQueries
@@ -30,7 +29,7 @@ class UserRepositoryImpl(
     }
 }
 
-private fun com.hk.habitflow.database.User.toDomain(): com.hk.habitflow.domain.model.User = com.hk.habitflow.domain.model.User(
+private fun com.hk.habitflow.database.User.toDomain(): User = User(
     id = id,
     name = name,
     email = email,

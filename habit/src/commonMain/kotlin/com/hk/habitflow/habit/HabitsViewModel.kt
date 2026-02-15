@@ -3,7 +3,6 @@ package com.hk.habitflow.habit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hk.habitflow.domain.repository.HabitRepository
-import com.hk.habitflow.habit.model.HabitUi
 import com.hk.habitflow.session.SessionHolder
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

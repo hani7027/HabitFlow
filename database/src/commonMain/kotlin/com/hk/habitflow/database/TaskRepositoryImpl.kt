@@ -1,6 +1,5 @@
 package com.hk.habitflow.database
 
-import com.hk.habitflow.database.HabitFlowDatabase
 import com.hk.habitflow.domain.model.TaskCategory
 import com.hk.habitflow.domain.model.TaskPriority
 import com.hk.habitflow.domain.model.TaskWithDetails
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class TaskRepositoryImpl(
-    private val database: HabitFlowDatabase
+    database: HabitFlowDatabase
 ) : TaskRepository {
 
     private val queries = database.taskQueries
@@ -82,9 +81,9 @@ private fun com.hk.habitflow.database.TaskPriority.toPriority(): TaskPriority = 
     color = color
 )
 
-private fun com.hk.habitflow.database.SelectAllByUserId.toTaskWithDetails(): TaskWithDetails = taskWithDetailsFromRow(id, userId, title, description, categoryId, categoryName, categoryIcon, priorityId, priorityName, priorityColor, dueDate, reminderTime, isCompleted, createdAt, completedAt)
+private fun SelectAllByUserId.toTaskWithDetails(): TaskWithDetails = taskWithDetailsFromRow(id, userId, title, description, categoryId, categoryName, categoryIcon, priorityId, priorityName, priorityColor, dueDate, reminderTime, isCompleted, createdAt, completedAt)
 
-private fun com.hk.habitflow.database.SelectByUserIdAndId.toTaskWithDetails(): TaskWithDetails = taskWithDetailsFromRow(id, userId, title, description, categoryId, categoryName, categoryIcon, priorityId, priorityName, priorityColor, dueDate, reminderTime, isCompleted, createdAt, completedAt)
+private fun SelectByUserIdAndId.toTaskWithDetails(): TaskWithDetails = taskWithDetailsFromRow(id, userId, title, description, categoryId, categoryName, categoryIcon, priorityId, priorityName, priorityColor, dueDate, reminderTime, isCompleted, createdAt, completedAt)
 
 private fun taskWithDetailsFromRow(
     id: String,
