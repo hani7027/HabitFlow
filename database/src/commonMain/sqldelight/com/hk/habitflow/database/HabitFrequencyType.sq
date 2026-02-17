@@ -1,0 +1,20 @@
+-- Static reference table for habit frequency (Daily, Custom).
+CREATE TABLE HabitFrequencyType (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT
+);
+
+CREATE INDEX HabitFrequencyType_id ON HabitFrequencyType(id);
+
+selectAll:
+SELECT * FROM HabitFrequencyType
+ORDER BY name;
+
+selectById:
+SELECT * FROM HabitFrequencyType
+WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO HabitFrequencyType(id, name, description)
+VALUES (?, ?, ?);

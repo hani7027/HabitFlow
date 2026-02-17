@@ -8,6 +8,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
     androidLibrary {
         namespace = "com.hk.habitflow"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -34,6 +37,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":design"))
             implementation(project(":core"))
+            implementation(project(":database"))
             implementation(project(":task"))
             implementation(project(":habit"))
             implementation(libs.compose.runtime)

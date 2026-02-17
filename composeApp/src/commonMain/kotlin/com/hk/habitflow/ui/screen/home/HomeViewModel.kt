@@ -2,44 +2,83 @@ package com.hk.habitflow.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hk.habitflow.ui.component.HabitCardUi
-import com.hk.habitflow.ui.component.TaskItemUi
-import com.hk.habitflow.ui.theme.HabitFlowColors
+import com.hk.habitflow.domain.repository.HabitRepository
+import com.hk.habitflow.domain.repository.TaskRepository
+import com.hk.habitflow.session.SessionHolder
+import com.hk.habitflow.task.util.PlatformClock
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val taskRepository: TaskRepository,
+    private val habitRepository: HabitRepository
+) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeState(
-        tasks = sampleTasks(),
-        habits = sampleHabits()
-    ))
+    private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
     private val _effect = Channel<HomeEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
+    init {
+        val userId = SessionHolder.userId
+        if (userId != null) {
+            viewModelScope.launch {
+                taskRepository.observeTasksByUserId(userId).collect { list ->
+                    _state.update { s ->
+                        s.copy(
+                            tasks = list.take(5).map { it.toTaskItemUi() },
+                            taskCount = list.size,
+                            completedCount = list.count { it.isCompleted },
+                            totalCount = list.size + s.habitCount
+                        )
+                    }
+                }
+            }
+            viewModelScope.launch {
+                habitRepository.observeHabitsByUserId(userId).collect { list ->
+                    _state.update { s ->
+                        s.copy(
+                            habits = list.take(5).map { it.toHabitCardUi() },
+                            habitCount = list.size,
+                            totalCount = s.taskCount + list.size
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.TaskChecked -> {
-                _state.update { state ->
-                    val task = state.tasks.find { it.id == event.taskId } ?: return@update state
-                    if (task.isCompleted == event.checked) return@update state
-                    val delta = if (event.checked) 1 else -1
-                    state.copy(
-                        tasks = state.tasks.map { t ->
-                            if (t.id == event.taskId) t.copy(isCompleted = event.checked) else t
-                        },
-                        completedCount = (state.completedCount + delta).coerceIn(0, state.totalCount)
+                val userId = SessionHolder.userId ?: return
+                viewModelScope.launch {
+                    val task = taskRepository.getTaskById(userId, event.taskId) ?: return@launch
+                    taskRepository.updateTask(
+                        task.copy(
+                            isCompleted = event.checked,
+                            completedAt = if (event.checked) PlatformClock.currentTimeMillis() else null
+                        )
                     )
+                    val list = taskRepository.observeTasksByUserId(userId).first()
+                    _state.update { s ->
+                        s.copy(
+                            tasks = list.take(5).map { it.toTaskItemUi() },
+                            taskCount = list.size,
+                            completedCount = list.count { it.isCompleted },
+                            totalCount = list.size + s.habitCount
+                        )
+                    }
                 }
             }
             is HomeEvent.HabitClicked -> {
-                // TODO: record habit completion when repo exists
+                // TODO: navigate to habit detail or record completion when API exists
             }
             HomeEvent.ViewAllTasks -> viewModelScope.launch {
                 _effect.send(HomeEffect.NavigateToTasks)
@@ -52,58 +91,4 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
-
-    private fun sampleTasks(): List<TaskItemUi> = listOf(
-        TaskItemUi(
-            id = "1",
-            title = "Review project proposal",
-            categoryLabel = "Work",
-            categoryColor = HabitFlowColors.CategoryWork,
-            time = "10:00 AM",
-            priorityColor = HabitFlowColors.PriorityHigh,
-            isCompleted = false
-        ),
-        TaskItemUi(
-            id = "2",
-            title = "Team standup meeting",
-            categoryLabel = "Work",
-            categoryColor = HabitFlowColors.Info,
-            time = "9:00 AM",
-            priorityColor = HabitFlowColors.PriorityMedium,
-            isCompleted = true
-        ),
-        TaskItemUi(
-            id = "3",
-            title = "Buy groceries",
-            categoryLabel = "Personal",
-            categoryColor = HabitFlowColors.CategoryPersonal,
-            time = "6:00 PM",
-            priorityColor = HabitFlowColors.PriorityLow,
-            isCompleted = false
-        )
-    )
-
-    private fun sampleHabits(): List<HabitCardUi> = listOf(
-        HabitCardUi(
-            id = "1",
-            name = "Drink Water",
-            progressText = "6/8 cups",
-            streakDays = 12,
-            cardColor = HabitFlowColors.Info
-        ),
-        HabitCardUi(
-            id = "2",
-            name = "Exercise",
-            progressText = "30 min",
-            streakDays = 8,
-            cardColor = HabitFlowColors.Success
-        ),
-        HabitCardUi(
-            id = "3",
-            name = "Read",
-            progressText = "20 pages",
-            streakDays = 5,
-            cardColor = HabitFlowColors.Primary
-        )
-    )
 }

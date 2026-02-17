@@ -1,0 +1,20 @@
+-- Static reference table for task categories.
+CREATE TABLE TaskCategory (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    icon TEXT
+);
+
+CREATE INDEX TaskCategory_id ON TaskCategory(id);
+
+selectAll:
+SELECT * FROM TaskCategory
+ORDER BY name;
+
+selectById:
+SELECT * FROM TaskCategory
+WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO TaskCategory(id, name, icon)
+VALUES (?, ?, ?);

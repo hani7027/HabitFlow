@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,9 +39,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.hk.habitflow.task.model.TaskCategory
 import com.hk.habitflow.task.model.TaskPriority
+import com.hk.habitflow.task.util.TimeFormatter
+import com.hk.habitflow.task.util.startOfDayEpochForDaysFromNow
 import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowComponents
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
+
+private val timeSlots: List<Pair<Int, Int>> = (0..23).flatMap { h -> (0..3).map { m -> h to (m * 15) } }
 
 @Composable
 fun AddTaskSheet(
@@ -44,15 +53,14 @@ fun AddTaskSheet(
     description: String,
     selectedCategory: TaskCategory?,
     selectedPriority: TaskPriority?,
-    dueDate: String,
-    dueTime: String,
+    dueDateTimeEpochMs: Long?,
     reminderEnabled: Boolean,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onCategorySelect: (TaskCategory) -> Unit,
     onPrioritySelect: (TaskPriority) -> Unit,
-    onDueDateChange: (String) -> Unit,
-    onDueTimeChange: (String) -> Unit,
+    onDueDatePicked: (Long) -> Unit,
+    onDueTimePicked: (Int, Int) -> Unit,
     onReminderChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     onSave: () -> Unit,
@@ -181,30 +189,78 @@ fun AddTaskSheet(
                     .padding(top = spacing.small),
                 horizontalArrangement = Arrangement.spacedBy(spacing.small)
             ) {
-                OutlinedTextField(
-                    value = dueDate,
-                    onValueChange = onDueDateChange,
-                    placeholder = { Text("dd/mm/yyyy") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    shape = RoundedCornerShape(components.inputCornerRadius),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.outline,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                    )
-                )
-                OutlinedTextField(
-                    value = dueTime,
-                    onValueChange = onDueTimeChange,
-                    placeholder = { Text("--:--") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    shape = RoundedCornerShape(components.inputCornerRadius),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.outline,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                    )
-                )
+                var dateMenuExpanded by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.weight(1f)) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(components.inputCornerRadius))
+                            .clickable { dateMenuExpanded = true },
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(components.inputCornerRadius)
+                    ) {
+                        Text(
+                            text = dueDateTimeEpochMs?.let { TimeFormatter.formatDate(it) } ?: "dd/mm/yyyy",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (dueDateTimeEpochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                        )
+                    }
+                    androidx.compose.material3.DropdownMenu(
+                        expanded = dateMenuExpanded,
+                        onDismissRequest = { dateMenuExpanded = false },
+                        modifier = Modifier.height(280.dp)
+                    ) {
+                        (0..30).forEach { daysFromNow ->
+                            val label = when (daysFromNow) {
+                                0 -> "Today"
+                                1 -> "Tomorrow"
+                                else -> "In $daysFromNow days"
+                            }
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    onDueDatePicked(startOfDayEpochForDaysFromNow(daysFromNow))
+                                    dateMenuExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                var timeMenuExpanded by remember { mutableStateOf(false) }
+                Box(modifier = Modifier.weight(1f)) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(components.inputCornerRadius))
+                            .clickable { timeMenuExpanded = true },
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(components.inputCornerRadius)
+                    ) {
+                        Text(
+                            text = dueDateTimeEpochMs?.let { TimeFormatter.formatTime(it) } ?: "--:--",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (dueDateTimeEpochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                        )
+                    }
+                    androidx.compose.material3.DropdownMenu(
+                        expanded = timeMenuExpanded,
+                        onDismissRequest = { timeMenuExpanded = false },
+                        modifier = Modifier.height(280.dp)
+                    ) {
+                        timeSlots.forEach { (h, m) ->
+                            val label = "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}"
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    onDueTimePicked(h, m)
+                                    timeMenuExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
             Surface(
                 modifier = Modifier
@@ -299,7 +355,7 @@ private fun PriorityChip(
 ) {
     val spacing = LocalHabitFlowSpacing.current
     Surface(
-        modifier = modifier,
+        modifier = modifier.then(if (selected) Modifier.border(2.dp, priority.color, RoundedCornerShape(8.dp)) else Modifier),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         color = priority.color.copy(alpha = 0.2f)

@@ -1,0 +1,38 @@
+-- Seed reference data. Call these once at app init (e.g. after schema create).
+-- Using fixed IDs so INSERT OR REPLACE is idempotent.
+
+seedTaskCategories:
+INSERT OR REPLACE INTO TaskCategory(id, name, icon) VALUES
+    ('cat_work', 'Work', 'work'),
+    ('cat_personal', 'Personal', 'personal'),
+    ('cat_health', 'Health', 'health'),
+    ('cat_finance', 'Finance', 'finance'),
+    ('cat_shopping', 'Shopping', 'shopping'),
+    ('cat_learning', 'Learning', 'learning'),
+    ('cat_other', 'Other', 'other');
+
+seedTaskPriorities:
+INSERT OR REPLACE INTO TaskPriority(id, name, color) VALUES
+    ('pri_low', 'Low', '#4CAF50'),
+    ('pri_medium', 'Medium', '#FF9800'),
+    ('pri_high', 'High', '#F44336');
+
+seedHabitIcons:
+INSERT OR REPLACE INTO HabitIcon(id, name) VALUES
+    ('icon_dumbbell', 'dumbbell'),
+    ('icon_water', 'water'),
+    ('icon_book', 'book'),
+    ('icon_bed', 'bed'),
+    ('icon_heart', 'heart'),
+    ('icon_apple', 'apple'),
+    ('icon_bicycle', 'bicycle'),
+    ('icon_coffee', 'coffee'),
+    ('icon_music', 'music'),
+    ('icon_pencil', 'pencil'),
+    ('icon_moon', 'moon'),
+    ('icon_plant', 'plant');
+
+seedHabitFrequencyTypes:
+INSERT OR REPLACE INTO HabitFrequencyType(id, name, description) VALUES
+    ('freq_daily', 'Daily', 'Every day'),
+    ('freq_custom', 'Custom', 'Select specific days');

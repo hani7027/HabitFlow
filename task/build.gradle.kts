@@ -8,6 +8,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
     androidLibrary {
         namespace = "com.hk.habitflow.task"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -27,6 +30,7 @@ kotlin {
     }
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":core"))
             implementation(project(":design"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -35,6 +39,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
             implementation(libs.koin.core.viewmodel)
             implementation(libs.koin.compose)
