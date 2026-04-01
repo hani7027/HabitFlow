@@ -20,7 +20,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowComponents
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
@@ -36,8 +35,9 @@ fun ProgressRingCard(
     val components = LocalHabitFlowComponents.current
     val progress = if (totalCount > 0) completedCount.toFloat() / totalCount else 0f
     val percentage = (progress * 100).toInt()
-    val ringBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
-    val primaryColor = HabitFlowColors.Primary
+    val scheme = MaterialTheme.colorScheme
+    val ringBackgroundColor = scheme.surfaceVariant
+    val primaryColor = scheme.primary
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -63,7 +63,7 @@ fun ProgressRingCard(
                 Text(
                     text = "$percentage%",
                     style = MaterialTheme.typography.titleLarge,
-                    color = HabitFlowColors.Primary
+                    color = primaryColor
                 )
             }
             Box(
@@ -116,7 +116,7 @@ fun ProgressRingCard(
                             .padding(end = spacing.tiny)
                     ) {
                         Canvas(Modifier.size(6.dp)) {
-                            drawCircle(color = HabitFlowColors.Primary)
+                            drawCircle(color = primaryColor)
                         }
                     }
                     Text(
@@ -137,7 +137,7 @@ fun ProgressRingCard(
                             .padding(end = spacing.tiny)
                     ) {
                         Canvas(Modifier.size(6.dp)) {
-                            drawCircle(color = HabitFlowColors.Primary)
+                            drawCircle(color = primaryColor)
                         }
                     }
                     Text(

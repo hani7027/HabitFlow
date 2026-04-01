@@ -16,9 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
 @Composable
@@ -28,8 +26,7 @@ fun QuickFocusCard(
     modifier: Modifier = Modifier
 ) {
     val spacing = LocalHabitFlowSpacing.current
-    val focusOrange = HabitFlowColors.Focus
-    val focusOrangeLight = HabitFlowColors.FocusContainer
+    val scheme = MaterialTheme.colorScheme
 
     Box(
         modifier = modifier
@@ -37,7 +34,7 @@ fun QuickFocusCard(
             .clip(MaterialTheme.shapes.extraLarge)
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(focusOrangeLight, focusOrange)
+                    colors = listOf(scheme.secondaryContainer, scheme.secondary)
                 )
             )
             .clickable(onClick = onStartClick)
@@ -52,44 +49,44 @@ fun QuickFocusCard(
                 Text(
                     text = "Quick Focus",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White
+                    color = scheme.onSecondary
                 )
                 Text(
                     text = "Start a Pomodoro session",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.9f)
+                    color = scheme.onSecondary.copy(alpha = 0.9f)
                 )
                 Text(
                     text = "${focusMinutes.toString().padStart(2, '0')}:00",
                     style = MaterialTheme.typography.displaySmall,
-                    color = Color.White
+                    color = scheme.onSecondary
                 )
                 Text(
                     text = "Focus time",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.9f)
+                    color = scheme.onSecondary.copy(alpha = 0.9f)
                 )
             }
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(Color.White.copy(alpha = 0.3f)),
+                    .background(scheme.onSecondary.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "⏱", style = MaterialTheme.typography.titleLarge)
+                Text(text = "⏱", style = MaterialTheme.typography.titleLarge, color = scheme.onSecondary)
             }
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-                    .background(Color.White)
+                    .background(scheme.surface)
                     .clickable(onClick = onStartClick)
                     .padding(horizontal = spacing.medium, vertical = spacing.small)
             ) {
                 Text(
                     text = "Start",
                     style = MaterialTheme.typography.labelLarge,
-                    color = HabitFlowColors.Focus
+                    color = scheme.primary
                 )
             }
         }

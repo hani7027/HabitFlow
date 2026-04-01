@@ -14,9 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
 @Composable
@@ -26,15 +24,14 @@ fun HomeHeader(
     modifier: Modifier = Modifier
 ) {
     val spacing = LocalHabitFlowSpacing.current
-    val primaryDark = HabitFlowColors.Primary
-    val primaryLight = HabitFlowColors.PrimaryVariant.copy(alpha = 0.6f)
+    val scheme = MaterialTheme.colorScheme
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(primaryDark, primaryLight)
+                    colors = listOf(scheme.primary, scheme.primaryContainer)
                 )
             )
             .padding(
@@ -50,19 +47,19 @@ fun HomeHeader(
                 Text(
                     text = greeting,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
+                    color = scheme.onPrimary
                 )
                 Text(
                     text = dateText,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.9f)
+                    color = scheme.onPrimaryContainer
                 )
             }
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .background(Color.White.copy(alpha = 0.2f)),
+                    .background(scheme.onPrimary.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = "🔔", style = MaterialTheme.typography.titleMedium)

@@ -8,6 +8,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
     androidLibrary {
         namespace = "com.hk.habitflow.design"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -29,8 +32,21 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
+            implementation("org.jetbrains.compose.material3:material3:${libs.versions.material3.get()}") {
+                exclude(group = "org.jetbrains.compose.material", module = "material-icons-extended")
+            }
             implementation(libs.compose.ui)
+        }
+        androidMain.dependencies {
+            implementation("org.jetbrains.compose.material3:material3:${libs.versions.material3.get()}") {
+                exclude(group = "org.jetbrains.compose.material", module = "material-icons-extended")
+            }
+            implementation(libs.androidx.core.ktx)
+        }
+        iosMain.dependencies {
+            implementation("org.jetbrains.compose.material3:material3:${libs.versions.material3.get()}") {
+                exclude(group = "org.jetbrains.compose.material", module = "material-icons-extended")
+            }
         }
     }
 }

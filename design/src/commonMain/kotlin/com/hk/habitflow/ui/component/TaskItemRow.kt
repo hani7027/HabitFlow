@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
 data class TaskItemUi(
@@ -60,7 +59,7 @@ fun TaskItemRow(
                 checked = task.isCompleted,
                 onCheckedChange = onCheckedChange,
                 colors = CheckboxDefaults.colors(
-                    checkedColor = HabitFlowColors.Primary,
+                    checkedColor = MaterialTheme.colorScheme.primary,
                     uncheckedColor = MaterialTheme.colorScheme.outline
                 )
             )
