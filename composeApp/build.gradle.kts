@@ -42,7 +42,9 @@ kotlin {
             implementation(project(":habit"))
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
+            implementation("org.jetbrains.compose.material3:material3:${libs.versions.material3.get()}") {
+                exclude(group = "org.jetbrains.compose.material", module = "material-icons-extended")
+            }
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)

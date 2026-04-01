@@ -6,9 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.hk.habitflow.habit.HabitsScreen
 import com.hk.habitflow.habit.HabitsViewModel
@@ -26,11 +27,23 @@ fun MainScreen(
     selectedTab: MainTab,
     onTabSelected: (MainTab) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Box(
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        bottomBar = {
+            MainBottomNav(
+                currentTab = selectedTab,
+                onTabSelected = onTabSelected,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+            )
+        }
+    ) { paddingValues ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 64.dp)
+                .padding(paddingValues),
+            color = MaterialTheme.colorScheme.background
         ) {
             when (selectedTab) {
                 MainTab.Home -> {
@@ -45,22 +58,15 @@ fun MainScreen(
                     val viewModel: TasksViewModel = koinViewModel()
                     TasksScreen(viewModel = viewModel)
                 }
-            MainTab.Habits -> {
-                val habitsViewModel: HabitsViewModel = koinViewModel()
-                val createHabitViewModel: CreateHabitViewModel = koinViewModel()
-                HabitsScreen(
-                    habitsViewModel = habitsViewModel,
-                    createHabitViewModel = createHabitViewModel
-                )
-            }
+                MainTab.Habits -> {
+                    val habitsViewModel: HabitsViewModel = koinViewModel()
+                    val createHabitViewModel: CreateHabitViewModel = koinViewModel()
+                    HabitsScreen(
+                        habitsViewModel = habitsViewModel,
+                        createHabitViewModel = createHabitViewModel
+                    )
+                }
             }
         }
-        MainBottomNav(
-            currentTab = selectedTab,
-            onTabSelected = onTabSelected,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .windowInsetsPadding(WindowInsets.navigationBars)
-        )
     }
 }

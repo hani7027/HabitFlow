@@ -10,7 +10,8 @@ fun HabitFlowTheme(
     darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) habitFlowDarkColorScheme() else habitFlowLightColorScheme()
+    val colorScheme = rememberHabitFlowColorScheme(darkTheme)
+    HabitFlowSystemBars(darkTheme)
     CompositionLocalProvider(
         LocalHabitFlowSpacing provides DefaultHabitFlowSpacing,
         LocalHabitFlowComponents provides DefaultHabitFlowComponents

@@ -14,9 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.hk.habitflow.ui.theme.HabitFlowColors
 import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
 @Composable
@@ -26,11 +24,12 @@ fun TasksHeader(
     modifier: Modifier = Modifier
 ) {
     val spacing = LocalHabitFlowSpacing.current
+    val scheme = MaterialTheme.colorScheme
     val gradient = Brush.verticalGradient(
         colors = listOf(
-            HabitFlowColors.Primary,
-            HabitFlowColors.PrimaryVariant.copy(alpha = 0.9f),
-            Color(0xFFE9D5FF)
+            scheme.primary,
+            scheme.primaryContainer,
+            scheme.surfaceContainerHigh
         )
     )
 
@@ -45,12 +44,12 @@ fun TasksHeader(
             Text(
                 text = "Tasks",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = scheme.onPrimary
             )
             Text(
                 text = dateText,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.9f)
+                color = scheme.onPrimaryContainer
             )
         }
         IconButton(
@@ -58,12 +57,12 @@ fun TasksHeader(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.2f))
+                .background(scheme.onPrimary.copy(alpha = 0.2f))
         ) {
             Text(
                 text = "⌕",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                color = scheme.onPrimary
             )
         }
     }

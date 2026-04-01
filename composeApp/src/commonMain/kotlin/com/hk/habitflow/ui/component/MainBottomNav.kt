@@ -1,81 +1,96 @@
 package com.hk.habitflow.ui.component
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import com.hk.habitflow.ui.navigation.MainTab
-import com.hk.habitflow.ui.theme.HabitFlowColors
-import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
+/**
+ * Bottom navigation using M3 [NavigationBar]. Icons are emoji (no JetBrains `material-icons-*`
+ * dependency — those artifacts are not reliably published for all Compose versions).
+ */
 @Composable
 fun MainBottomNav(
     currentTab: MainTab,
     onTabSelected: (MainTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val spacing = LocalHabitFlowSpacing.current
-
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .clip(MaterialTheme.shapes.large),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        tonalElevation = 8.dp
+    val colors = MaterialTheme.colorScheme
+    NavigationBar(
+        modifier = modifier,
+        containerColor = colors.surfaceContainer,
+        contentColor = colors.onSurface
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(spacing.medium),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            NavItem(
-                label = "Home",
-                selected = currentTab == MainTab.Home,
-                onClick = { onTabSelected(MainTab.Home) }
+        NavigationBarItem(
+            selected = currentTab == MainTab.Home,
+            onClick = { onTabSelected(MainTab.Home) },
+            icon = {
+                NavBarGlyph(
+                    glyph = "⌂",
+                    selected = currentTab == MainTab.Home
+                )
+            },
+            label = { Text("Home") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colors.primary,
+                selectedTextColor = colors.primary,
+                indicatorColor = colors.primaryContainer,
+                unselectedIconColor = colors.onSurfaceVariant,
+                unselectedTextColor = colors.onSurfaceVariant
             )
-            NavItem(
-                label = "Tasks",
-                selected = currentTab == MainTab.Tasks,
-                onClick = { onTabSelected(MainTab.Tasks) }
+        )
+        NavigationBarItem(
+            selected = currentTab == MainTab.Tasks,
+            onClick = { onTabSelected(MainTab.Tasks) },
+            icon = {
+                NavBarGlyph(
+                    glyph = "☑",
+                    selected = currentTab == MainTab.Tasks
+                )
+            },
+            label = { Text("Tasks") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colors.primary,
+                selectedTextColor = colors.primary,
+                indicatorColor = colors.primaryContainer,
+                unselectedIconColor = colors.onSurfaceVariant,
+                unselectedTextColor = colors.onSurfaceVariant
             )
-            NavItem(
-                label = "Habits",
-                selected = currentTab == MainTab.Habits,
-                onClick = { onTabSelected(MainTab.Habits) }
+        )
+        NavigationBarItem(
+            selected = currentTab == MainTab.Habits,
+            onClick = { onTabSelected(MainTab.Habits) },
+            icon = {
+                NavBarGlyph(
+                    glyph = "↻",
+                    selected = currentTab == MainTab.Habits
+                )
+            },
+            label = { Text("Habits") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colors.primary,
+                selectedTextColor = colors.primary,
+                indicatorColor = colors.primaryContainer,
+                unselectedIconColor = colors.onSurfaceVariant,
+                unselectedTextColor = colors.onSurfaceVariant
             )
-        }
+        )
     }
 }
 
 @Composable
-private fun NavItem(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
+private fun NavBarGlyph(
+    glyph: String,
+    selected: Boolean
 ) {
-    val color = if (selected) HabitFlowColors.Primary else MaterialTheme.colorScheme.onSurfaceVariant
-    Column(
-        modifier = Modifier.clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = color
-        )
-    }
+    val colors = MaterialTheme.colorScheme
+    Text(
+        text = glyph,
+        style = MaterialTheme.typography.titleLarge,
+        color = if (selected) colors.primary else colors.onSurfaceVariant
+    )
 }
