@@ -47,23 +47,31 @@ import com.hk.habitflow.ui.theme.LocalHabitFlowSpacing
 
 private val timeSlots: List<Pair<Int, Int>> = (0..23).flatMap { h -> (0..3).map { m -> h to (m * 15) } }
 
+data class TaskDetails(
+    val title: String,
+    val description: String,
+    val selectedCategory: TaskCategory?,
+    val selectedPriority: TaskPriority?,
+    val dueDateTimeEpochMs: Long?,
+    val reminderEnabled: Boolean
+)
+
+data class TaskCallbacks(
+    val onTitleChange: (String) -> Unit,
+    val onDescriptionChange: (String) -> Unit,
+    val onCategorySelect: (TaskCategory) -> Unit,
+    val onPrioritySelect: (TaskPriority) -> Unit,
+    val onDueDatePicked: (Long) -> Unit,
+    val onDueTimePicked: (Int, Int) -> Unit,
+    val onReminderChange: (Boolean) -> Unit,
+    val onDismiss: () -> Unit,
+    val onSave: () -> Unit
+)
+
 @Composable
 fun AddTaskSheet(
-    title: String,
-    description: String,
-    selectedCategory: TaskCategory?,
-    selectedPriority: TaskPriority?,
-    dueDateTimeEpochMs: Long?,
-    reminderEnabled: Boolean,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onCategorySelect: (TaskCategory) -> Unit,
-    onPrioritySelect: (TaskPriority) -> Unit,
-    onDueDatePicked: (Long) -> Unit,
-    onDueTimePicked: (Int, Int) -> Unit,
-    onReminderChange: (Boolean) -> Unit,
-    onDismiss: () -> Unit,
-    onSave: () -> Unit,
+    taskDetails: TaskDetails,
+    taskCallbacks: TaskCallbacks,
     modifier: Modifier = Modifier,
     sheetTitle: String = "Add New Task",
     saveLabel: String = "Save Task"
@@ -94,18 +102,17 @@ fun AddTaskSheet(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                IconButton(onClick = onDismiss) {
+                IconButton(onClick = taskCallbacks.onDismiss) {
                     Text(
                         text = "×",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.titleLarge
                     )
                 }
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = spacing.small))
             OutlinedTextField(
-                value = title,
-                onValueChange = onTitleChange,
+                value = taskDetails.title,
+                onValueChange = taskCallbacks.onTitleChange,
                 label = { Text("Task Title *") },
                 placeholder = { Text("What do you need to do?") },
                 modifier = Modifier.fillMaxWidth(),
@@ -117,8 +124,8 @@ fun AddTaskSheet(
                 )
             )
             OutlinedTextField(
-                value = description,
-                onValueChange = onDescriptionChange,
+                value = taskDetails.description,
+                onValueChange = taskCallbacks.onDescriptionChange,
                 label = { Text("Description (Optional)") },
                 placeholder = { Text("Add more details...") },
                 modifier = Modifier
@@ -138,47 +145,22 @@ fun AddTaskSheet(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = spacing.medium)
             )
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(top = spacing.small),
-                verticalArrangement = Arrangement.spacedBy(spacing.small)
-            ) {
-                TaskCategory.entries.chunked(3).forEach { row ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(spacing.small)
-                    ) {
-                        row.forEach { cat ->
-                            CategoryChip(
-                                category = cat,
-                                selected = selectedCategory == cat,
-                                onClick = { onCategorySelect(cat) },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                }
-            }
+            CategoryGrid(
+                selectedCategory = taskDetails.selectedCategory,
+                onCategorySelect = taskCallbacks.onCategorySelect,
+                modifier = Modifier.fillMaxWidth().padding(top = spacing.small)
+            )
             Text(
                 text = "Priority *",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = spacing.medium)
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = spacing.small),
-                horizontalArrangement = Arrangement.spacedBy(spacing.small)
-            ) {
-                TaskPriority.entries.forEach { pri ->
-                    PriorityChip(
-                        priority = pri,
-                        selected = selectedPriority == pri,
-                        onClick = { onPrioritySelect(pri) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
+            PriorityRow(
+                selectedPriority = taskDetails.selectedPriority,
+                onPrioritySelect = taskCallbacks.onPrioritySelect,
+                modifier = Modifier.fillMaxWidth().padding(top = spacing.small)
+            )
             Text(
                 text = "Due Date & Time",
                 style = MaterialTheme.typography.labelLarge,
@@ -191,135 +173,170 @@ fun AddTaskSheet(
                     .padding(top = spacing.small),
                 horizontalArrangement = Arrangement.spacedBy(spacing.small)
             ) {
-                var dateMenuExpanded by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.weight(1f)) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(components.inputCornerRadius))
-                            .clickable { dateMenuExpanded = true },
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(components.inputCornerRadius)
-                    ) {
-                        Text(
-                            text = dueDateTimeEpochMs?.let { TimeFormatter.formatDate(it) } ?: "dd/mm/yyyy",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (dueDateTimeEpochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-                        )
-                    }
-                    androidx.compose.material3.DropdownMenu(
-                        expanded = dateMenuExpanded,
-                        onDismissRequest = { dateMenuExpanded = false },
-                        modifier = Modifier.height(280.dp)
-                    ) {
-                        (0..30).forEach { daysFromNow ->
-                            val label = when (daysFromNow) {
-                                0 -> "Today"
-                                1 -> "Tomorrow"
-                                else -> "In $daysFromNow days"
-                            }
-                            DropdownMenuItem(
-                                text = { Text(label) },
-                                onClick = {
-                                    onDueDatePicked(startOfDayEpochForDaysFromNow(daysFromNow))
-                                    dateMenuExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-                var timeMenuExpanded by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.weight(1f)) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(components.inputCornerRadius))
-                            .clickable { timeMenuExpanded = true },
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(components.inputCornerRadius)
-                    ) {
-                        Text(
-                            text = dueDateTimeEpochMs?.let { TimeFormatter.formatTime(it) } ?: "--:--",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (dueDateTimeEpochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-                        )
-                    }
-                    androidx.compose.material3.DropdownMenu(
-                        expanded = timeMenuExpanded,
-                        onDismissRequest = { timeMenuExpanded = false },
-                        modifier = Modifier.height(280.dp)
-                    ) {
-                        timeSlots.forEach { (h, m) ->
-                            val label = "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}"
-                            DropdownMenuItem(
-                                text = { Text(label) },
-                                onClick = {
-                                    onDueTimePicked(h, m)
-                                    timeMenuExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
+                DueDatePicker(
+                    epochMs = taskDetails.dueDateTimeEpochMs,
+                    onDatePicked = taskCallbacks.onDueDatePicked,
+                    modifier = Modifier.weight(1f)
+                )
+                DueTimePicker(
+                    epochMs = taskDetails.dueDateTimeEpochMs,
+                    onTimePicked = taskCallbacks.onDueTimePicked,
+                    modifier = Modifier.weight(1f)
+                )
             }
-            Surface(
+            ReminderToggle(
+                enabled = taskDetails.reminderEnabled,
+                onReminderChange = taskCallbacks.onReminderChange,
+                modifier = Modifier.fillMaxWidth().padding(top = spacing.medium)
+            )
+            ActionButtons(
+                onDismiss = taskCallbacks.onDismiss,
+                onSave = taskCallbacks.onSave,
+                saveLabel = saveLabel,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = spacing.medium)
-                    .clip(RoundedCornerShape(components.inputCornerRadius))
-                    .clickable { onReminderChange(!reminderEnabled) },
-                color = HabitFlowColors.Primary.copy(alpha = 0.1f)
+                    .padding(top = spacing.large, bottom = spacing.extraLarge)
+            )
+        }
+    }
+}
+
+@Composable
+private fun PriorityRow(
+    selectedPriority: TaskPriority?,
+    onPrioritySelect: (TaskPriority) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val spacing = LocalHabitFlowSpacing.current
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(spacing.small)
+    ) {
+        TaskPriority.entries.forEach { pri ->
+            PriorityChip(
+                priority = pri,
+                selected = selectedPriority == pri,
+                onClick = { onPrioritySelect(pri) },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryGrid(
+    selectedCategory: TaskCategory?,
+    onCategorySelect: (TaskCategory) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val spacing = LocalHabitFlowSpacing.current
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(spacing.small)
+    ) {
+        TaskCategory.entries.chunked(3).forEach { row ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(spacing.small)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(spacing.medium),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(
-                            text = "Set Reminder",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Get notified before due time",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Switch(
-                        checked = reminderEnabled,
-                        onCheckedChange = onReminderChange,
-                        colors = SwitchDefaults.colors(checkedThumbColor = HabitFlowColors.Primary)
+                row.forEach { cat ->
+                    CategoryChip(
+                        category = cat,
+                        selected = selectedCategory == cat,
+                        onClick = { onCategorySelect(cat) },
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = spacing.large, bottom = spacing.extraLarge),
-                horizontalArrangement = Arrangement.spacedBy(spacing.medium)
-            ) {
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                    shape = RoundedCornerShape(components.buttonCornerRadius)
-                ) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun DueDatePicker(
+    epochMs: Long?,
+    onDatePicked: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val components = LocalHabitFlowComponents.current
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(components.inputCornerRadius))
+                .clickable { expanded = true },
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            shape = RoundedCornerShape(components.inputCornerRadius)
+        ) {
+            Text(
+                text = epochMs?.let { TimeFormatter.formatDate(it) } ?: "dd/mm/yyyy",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (epochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+            )
+        }
+        androidx.compose.material3.DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.height(280.dp)
+        ) {
+            (0..30).forEach { daysFromNow ->
+                val label = when (daysFromNow) {
+                    0 -> "Today"
+                    1 -> "Tomorrow"
+                    else -> "In $daysFromNow days"
                 }
-                Button(
-                    onClick = onSave,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = HabitFlowColors.Primary),
-                    shape = RoundedCornerShape(components.buttonCornerRadius)
-                ) {
-                    Text(saveLabel, color = Color.White)
-                }
+                DropdownMenuItem(
+                    text = { Text(label) },
+                    onClick = {
+                        onDatePicked(startOfDayEpochForDaysFromNow(daysFromNow))
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DueTimePicker(
+    epochMs: Long?,
+    onTimePicked: (Int, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val components = LocalHabitFlowComponents.current
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(components.inputCornerRadius))
+                .clickable { expanded = true },
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            shape = RoundedCornerShape(components.inputCornerRadius)
+        ) {
+            Text(
+                text = epochMs?.let { TimeFormatter.formatTime(it) } ?: "--:--",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (epochMs != null) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+            )
+        }
+        androidx.compose.material3.DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.height(280.dp)
+        ) {
+            timeSlots.forEach { (h, m) ->
+                val label = "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}"
+                DropdownMenuItem(
+                    text = { Text(label) },
+                    onClick = {
+                        onTimePicked(h, m)
+                        expanded = false
+                    }
+                )
             }
         }
     }
