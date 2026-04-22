@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.hk.habitflow.database.HabitFlowDatabase
@@ -18,8 +16,8 @@ import com.hk.habitflow.database.initializeDatabase
 import com.hk.habitflow.domain.model.User
 import com.hk.habitflow.domain.repository.UserRepository
 import com.hk.habitflow.di.habitFlowModule
+import com.hk.habitflow.session.SessionHolder
 import com.hk.habitflow.ui.navigation.AppNavGraph
-import com.hk.habitflow.ui.navigation.AppRoute
 import com.hk.habitflow.ui.navigation.MainTab
 import com.hk.habitflow.ui.theme.HabitFlowTheme
 import org.koin.compose.KoinApplication
@@ -56,23 +54,22 @@ private fun DatabaseInit() {
                 )
             )
         }
+        SessionHolder.userId = "user_1"
     }
 }
 
 @Composable
 fun AppContent() {
-    var currentRoute by remember { mutableStateOf<AppRoute>(AppRoute.Login) }
-    var mainTab by remember { mutableStateOf(MainTab.Home) }
+    SessionHolder.userId = "user_1"
+    val mainTab = remember { mutableStateOf(MainTab.Home) }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         AppNavGraph(
-            currentRoute = currentRoute,
-            mainTab = mainTab,
-            onNavigate = { currentRoute = it },
-            onMainTabSelected = { mainTab = it }
+            mainTab = mainTab.value,
+            onMainTabSelected = { mainTab.value = it }
         )
     }
 }

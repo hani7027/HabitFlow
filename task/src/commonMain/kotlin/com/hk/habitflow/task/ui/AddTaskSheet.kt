@@ -202,6 +202,80 @@ fun AddTaskSheet(
 }
 
 @Composable
+private fun ReminderToggle(
+    enabled: Boolean,
+    onReminderChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val components = LocalHabitFlowComponents.current
+    val spacing = LocalHabitFlowSpacing.current
+    Surface(
+        modifier = modifier
+            .clip(RoundedCornerShape(components.inputCornerRadius))
+            .clickable { onReminderChange(!enabled) },
+        color = HabitFlowColors.Primary.copy(alpha = 0.1f)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(spacing.medium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = "Set Reminder",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Get notified before due time",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(
+                checked = enabled,
+                onCheckedChange = onReminderChange,
+                colors = SwitchDefaults.colors(checkedThumbColor = HabitFlowColors.Primary)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActionButtons(
+    onDismiss: () -> Unit,
+    onSave: () -> Unit,
+    saveLabel: String,
+    modifier: Modifier = Modifier
+) {
+    val components = LocalHabitFlowComponents.current
+    val spacing = LocalHabitFlowSpacing.current
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(spacing.medium)
+    ) {
+        Button(
+            onClick = onDismiss,
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            shape = RoundedCornerShape(components.buttonCornerRadius)
+        ) {
+            Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Button(
+            onClick = onSave,
+            modifier = Modifier.weight(1f),
+            colors = ButtonDefaults.buttonColors(containerColor = HabitFlowColors.Primary),
+            shape = RoundedCornerShape(components.buttonCornerRadius)
+        ) {
+            Text(saveLabel, color = Color.White)
+        }
+    }
+}
+
+@Composable
 private fun PriorityRow(
     selectedPriority: TaskPriority?,
     onPrioritySelect: (TaskPriority) -> Unit,

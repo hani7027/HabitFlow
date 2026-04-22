@@ -9,6 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hk.habitflow.task.ui.AddTaskSheet
+import com.hk.habitflow.task.ui.TaskCallbacks
+import com.hk.habitflow.task.ui.TaskDetails
 import com.hk.habitflow.task.ui.TasksContent
 
 @Composable
@@ -37,21 +39,25 @@ fun TasksScreen(
                 }
                 AddTaskSheet(
                     modifier = Modifier.align(Alignment.BottomCenter),
-                    title = state.addTaskTitle,
-                    description = state.addTaskDescription,
-                    selectedCategory = state.addTaskCategory,
-                    selectedPriority = state.addTaskPriority,
-                    dueDateTimeEpochMs = state.addTaskDueDateTimeEpochMs,
-                    reminderEnabled = state.addTaskReminderEnabled,
-                    onTitleChange = { viewModel.onEvent(TasksEvent.AddTaskTitleChange(it)) },
-                    onDescriptionChange = { viewModel.onEvent(TasksEvent.AddTaskDescriptionChange(it)) },
-                    onCategorySelect = { viewModel.onEvent(TasksEvent.AddTaskCategorySelect(it)) },
-                    onPrioritySelect = { viewModel.onEvent(TasksEvent.AddTaskPrioritySelect(it)) },
-                    onDueDatePicked = { viewModel.onEvent(TasksEvent.AddTaskDueDatePicked(it)) },
-                    onDueTimePicked = { h, m -> viewModel.onEvent(TasksEvent.AddTaskDueTimePicked(h, m)) },
-                    onReminderChange = { viewModel.onEvent(TasksEvent.AddTaskReminderChange(it)) },
-                    onDismiss = { viewModel.onEvent(TasksEvent.DismissAddTaskSheet) },
-                    onSave = { viewModel.onEvent(TasksEvent.SaveTask) }
+                    taskDetails = TaskDetails(
+                        title = state.addTaskTitle,
+                        description = state.addTaskDescription,
+                        selectedCategory = state.addTaskCategory,
+                        selectedPriority = state.addTaskPriority,
+                        dueDateTimeEpochMs = state.addTaskDueDateTimeEpochMs,
+                        reminderEnabled = state.addTaskReminderEnabled
+                    ),
+                    taskCallbacks = TaskCallbacks(
+                        onTitleChange = { viewModel.onEvent(TasksEvent.AddTaskTitleChange(it)) },
+                        onDescriptionChange = { viewModel.onEvent(TasksEvent.AddTaskDescriptionChange(it)) },
+                        onCategorySelect = { viewModel.onEvent(TasksEvent.AddTaskCategorySelect(it)) },
+                        onPrioritySelect = { viewModel.onEvent(TasksEvent.AddTaskPrioritySelect(it)) },
+                        onDueDatePicked = { viewModel.onEvent(TasksEvent.AddTaskDueDatePicked(it)) },
+                        onDueTimePicked = { h, m -> viewModel.onEvent(TasksEvent.AddTaskDueTimePicked(h, m)) },
+                        onReminderChange = { viewModel.onEvent(TasksEvent.AddTaskReminderChange(it)) },
+                        onDismiss = { viewModel.onEvent(TasksEvent.DismissAddTaskSheet) },
+                        onSave = { viewModel.onEvent(TasksEvent.SaveTask) }
+                    )
                 )
             }
         }
