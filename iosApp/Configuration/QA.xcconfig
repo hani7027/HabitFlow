@@ -1,0 +1,5 @@
+#include "Config.xcconfig"
+
+APP_ENV=qa
+APP_DISPLAY_NAME=HabitFlow QA
+BUNDLE_ID_SUFFIX=.qa

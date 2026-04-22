@@ -13,7 +13,7 @@ actual object TimeFormatter {
             timeZone = NSTimeZone.localTimeZone
         }
         val date = NSDate(epochMs / 1000.0)
-        return formatter.stringFromDate(date) ?: "--:--"
+        return formatter.stringFromDate(date)
     }
 
     actual fun formatDate(epochMs: Long?): String {
@@ -23,6 +23,6 @@ actual object TimeFormatter {
             timeZone = NSTimeZone.localTimeZone
         }
         val date = NSDate(epochMs / 1000.0)
-        return formatter.stringFromDate(date) ?: ""
+        return formatter.stringFromDate(date)
     }
 }

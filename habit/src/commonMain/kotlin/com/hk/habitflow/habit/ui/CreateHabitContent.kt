@@ -128,8 +128,8 @@ fun CreateHabitContent(
                 modifier = Modifier.weight(1f)
             )
             TargetTypeChip(
-                label = "# Count",
-                icon = "#",
+                label = "Count",
+                icon = "🕐",
                 selected = state.targetType == DailyTargetType.Count,
                 onClick = { onEvent(CreateHabitEvent.TargetTypeSelect(DailyTargetType.Count)) },
                 modifier = Modifier.weight(1f)
@@ -283,7 +283,7 @@ private fun FrequencyChip(
             text = label,
             style = MaterialTheme.typography.labelLarge,
             color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(vertical = 12.dp)
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 12.dp)
         )
     }
 }

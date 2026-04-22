@@ -66,7 +66,27 @@ class TasksViewModel(
                     }
                 }
             }
-            is TasksEvent.TaskOptions -> { /* TODO: show options menu */ }
+            is TasksEvent.TaskOptions -> {
+                val userId = SessionHolder.userId ?: return
+                viewModelScope.launch {
+                    val full = taskRepository.getTaskById(userId, event.taskId) ?: return@launch
+                    val category = TaskCategory.entries.find { it.label == full.categoryName } ?: TaskCategory.Other
+                    val priority = TaskPriority.entries.find { it.label == full.priorityName } ?: TaskPriority.Medium
+                    val reminderEnabled = full.reminderTime != null
+                    _state.update {
+                        it.copy(
+                            showEditTaskSheet = true,
+                            editingTaskId = full.id,
+                            editTaskTitle = full.title,
+                            editTaskDescription = full.description.orEmpty(),
+                            editTaskCategory = category,
+                            editTaskPriority = priority,
+                            editTaskDueDateTimeEpochMs = full.dueDate,
+                            editTaskReminderEnabled = reminderEnabled
+                        )
+                    }
+                }
+            }
             TasksEvent.AddTaskClick -> _state.update { it.copy(showAddTaskSheet = true) }
             TasksEvent.DismissAddTaskSheet -> _state.update {
                 it.copy(
@@ -97,6 +117,37 @@ class TasksViewModel(
             }
             is TasksEvent.AddTaskReminderChange -> _state.update { it.copy(addTaskReminderEnabled = event.enabled) }
             TasksEvent.SaveTask -> saveNewTask()
+            // ── Edit task events ──
+            TasksEvent.DismissEditTaskSheet -> _state.update {
+                it.copy(
+                    showEditTaskSheet = false,
+                    editingTaskId = null,
+                    editTaskTitle = "",
+                    editTaskDescription = "",
+                    editTaskCategory = null,
+                    editTaskPriority = null,
+                    editTaskDueDateTimeEpochMs = null,
+                    editTaskReminderEnabled = false
+                )
+            }
+            is TasksEvent.EditTaskTitleChange -> _state.update { it.copy(editTaskTitle = event.value) }
+            is TasksEvent.EditTaskDescriptionChange -> _state.update { it.copy(editTaskDescription = event.value) }
+            is TasksEvent.EditTaskCategorySelect -> _state.update { it.copy(editTaskCategory = event.category) }
+            is TasksEvent.EditTaskPrioritySelect -> _state.update { it.copy(editTaskPriority = event.priority) }
+            is TasksEvent.EditTaskDueDatePicked -> {
+                val current = _state.value.editTaskDueDateTimeEpochMs
+                val merged = if (current != null) epochFromDayAndTime(event.dayStartEpochMs, hourMinuteFromEpoch(current).first, hourMinuteFromEpoch(current).second)
+                else event.dayStartEpochMs
+                _state.update { it.copy(editTaskDueDateTimeEpochMs = merged) }
+            }
+            is TasksEvent.EditTaskDueTimePicked -> {
+                val current = _state.value.editTaskDueDateTimeEpochMs
+                val dayStart = if (current != null) startOfDayEpoch(current) else PlatformClock.currentTimeMillis().let { startOfDayEpoch(it) }
+                val merged = epochFromDayAndTime(dayStart, event.hour, event.minute)
+                _state.update { it.copy(editTaskDueDateTimeEpochMs = merged) }
+            }
+            is TasksEvent.EditTaskReminderChange -> _state.update { it.copy(editTaskReminderEnabled = event.enabled) }
+            TasksEvent.UpdateTask -> updateExistingTask()
         }
     }
 
@@ -147,6 +198,52 @@ class TasksViewModel(
                     addTaskPriority = null,
                     addTaskDueDateTimeEpochMs = null,
                     addTaskReminderEnabled = false
+                )
+            }
+        }
+    }
+
+    private fun updateExistingTask() {
+        val state = _state.value
+        val taskId = state.editingTaskId ?: return
+        val title = state.editTaskTitle.trim()
+        if (title.isEmpty()) return
+        val userId = SessionHolder.userId ?: return
+        viewModelScope.launch {
+            val existing = taskRepository.getTaskById(userId, taskId) ?: return@launch
+            val categories = taskRepository.getTaskCategories().first()
+            val priorities = taskRepository.getTaskPriorities().first()
+            val category = state.editTaskCategory ?: TaskCategory.Other
+            val priority = state.editTaskPriority ?: TaskPriority.Medium
+            val categoryId = categories.find { it.name == category.label }?.id ?: existing.categoryId
+            val priorityId = priorities.find { it.name == priority.label }?.id ?: existing.priorityId
+            val dueEpoch = state.editTaskDueDateTimeEpochMs
+            val reminderEpoch = if (state.editTaskReminderEnabled && dueEpoch != null) dueEpoch - 15 * 60 * 1000 else null
+            val updated = existing.copy(
+                title = title,
+                description = state.editTaskDescription.trim().takeIf { it.isNotEmpty() },
+                categoryId = categoryId,
+                categoryName = category.label,
+                priorityId = priorityId,
+                priorityName = priority.label,
+                dueDate = dueEpoch,
+                reminderTime = reminderEpoch
+            )
+            taskRepository.updateTask(updated)
+            val uiList = taskRepository.observeTasksByUserId(userId).first().map { it.toTaskUi() }
+            _state.update {
+                it.copy(
+                    tasks = uiList,
+                    totalCount = uiList.size,
+                    completedCount = uiList.count { t -> t.isCompleted },
+                    showEditTaskSheet = false,
+                    editingTaskId = null,
+                    editTaskTitle = "",
+                    editTaskDescription = "",
+                    editTaskCategory = null,
+                    editTaskPriority = null,
+                    editTaskDueDateTimeEpochMs = null,
+                    editTaskReminderEnabled = false
                 )
             }
         }

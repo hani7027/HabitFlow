@@ -64,7 +64,9 @@ fun AddTaskSheet(
     onReminderChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     onSave: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sheetTitle: String = "Add New Task",
+    saveLabel: String = "Save Task"
 ) {
     val spacing = LocalHabitFlowSpacing.current
     val components = LocalHabitFlowComponents.current
@@ -88,7 +90,7 @@ fun AddTaskSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Add New Task",
+                    text = sheetTitle,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -316,7 +318,7 @@ fun AddTaskSheet(
                     colors = ButtonDefaults.buttonColors(containerColor = HabitFlowColors.Primary),
                     shape = RoundedCornerShape(components.buttonCornerRadius)
                 ) {
-                    Text("Save Task", color = Color.White)
+                    Text(saveLabel, color = Color.White)
                 }
             }
         }

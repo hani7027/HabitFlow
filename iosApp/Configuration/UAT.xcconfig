@@ -1,0 +1,5 @@
+#include "Config.xcconfig"
+
+APP_ENV=uat
+APP_DISPLAY_NAME=HabitFlow UAT
+BUNDLE_ID_SUFFIX=.uat

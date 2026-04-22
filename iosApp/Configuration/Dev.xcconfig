@@ -1,0 +1,5 @@
+#include "Config.xcconfig"
+
+APP_ENV=dev
+APP_DISPLAY_NAME=HabitFlow Dev
+BUNDLE_ID_SUFFIX=.dev
