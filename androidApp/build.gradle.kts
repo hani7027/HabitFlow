@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+fun secret(name: String): String? =
+    (findProperty(name) as? String)?.takeIf { it.isNotBlank() }
+        ?: System.getenv(name)?.takeIf { it.isNotBlank() }
+
 kotlin {
     jvmToolchain(11)
     compilerOptions {
@@ -25,12 +29,31 @@ android {
         applicationId = "com.hk.habitflow"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = secret("HF_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = secret("HF_VERSION_NAME") ?: "1.0"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    signingConfigs {
+        create("release") {
+            val storeFilePath = secret("HF_RELEASE_STORE_FILE")
+            val storePass = secret("HF_RELEASE_STORE_PASSWORD")
+            val keyAliasName = secret("HF_RELEASE_KEY_ALIAS")
+            val keyPass = secret("HF_RELEASE_KEY_PASSWORD")
+            if (
+                storeFilePath != null &&
+                storePass != null &&
+                keyAliasName != null &&
+                keyPass != null
+            ) {
+                storeFile = file(storeFilePath)
+                storePassword = storePass
+                keyAlias = keyAliasName
+                keyPassword = keyPass
+            }
         }
     }
     buildTypes {
@@ -40,6 +63,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     flavorDimensions += "environment"
